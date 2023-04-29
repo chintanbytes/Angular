@@ -1,0 +1,24 @@
+<div class="form-container">
+  <h2>Register</h2>
+  <form class="example-form">
+
+  <mat-form-field class="example-full-width" appearance="fill">
+  <mat-label>User Name</mat-label>
+  <input matInput placeholder="Enter your name" name="usename"
+  [(ngModel)] ="username">
+  </mat-form-field><br>
+
+  <mat-form-field class="example-full-width" appearance="fill">
+  <mat-label>Password</mat-label>
+  <input matInput placeholder="Enter your password" value="" name="password" type="password" [(ngModel)]= "password">
+  </mat-form-field><br>
+
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Confirm Password</mat-label>
+    <input matInput placeholder="Enter your password" value="" name="password" type="password" [(ngModel)]= "confirmpassword">
+    </mat-form-field><br>
+
+  <button mat-raised-button color="primary" (click)="register()">Register</button>
+  </form>
+
+  </div>
