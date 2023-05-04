@@ -14,7 +14,7 @@ export class AuthService {
 
   async loadUser(){
     const user = await firstValueFrom(
-    this.http.get<any>('/api/user')
+    this.http.get<any>('/api/users')
     )
 
     if('user_id' in user){
@@ -25,20 +25,20 @@ export class AuthService {
  }
 
   login(loginForm: any){
-    return this.http.post<any>('/api/login', loginForm, {withCredentials: true})
+    return this.http.post<any>('/api/users/login', loginForm, {withCredentials: true})
     .subscribe(_ => {
       this.loadUser();
     });
   }
 
   register(registerForm: any){
-    return this.http.post<any>('/api/register', registerForm, {withCredentials: true})
+    return this.http.post<any>('/api/users/register', registerForm, {withCredentials: true})
     .subscribe(_ => {
     });
   }
 
   logout(){
-    return this.http.get<any>('/api/logout')
+    return this.http.get<any>('/api/users/logout')
     .subscribe(_ => this.user = null );
   }
 }

@@ -3,11 +3,27 @@ public static class BuildExtention
     public static WebApplication BuildWithSpa(this WebApplicationBuilder builder)
     {
         var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("https://localhost:7080/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = "api";
+            });
+        }
+
         app.UseRouting();
-        app.UseAuthentication();
+
         app.UseAuthorization();
 
-        app.UseEndpoints(_ => { });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        app.UseHttpsRedirection();
 
         app.Use((ctx, next) =>
         {
@@ -23,7 +39,6 @@ public static class BuildExtention
         {
             spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
         });
-
         return app;
     }
 }

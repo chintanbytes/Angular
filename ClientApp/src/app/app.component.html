@@ -1,7 +1,4 @@
 <mat-toolbar color="primary">
-  <!-- <button mat-icon-button (click)="sidenav.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button> -->
   <span class="example-spacer"></span>
   <button mat-icon-button routerLink="/">
     <mat-icon>home</mat-icon>
@@ -10,20 +7,9 @@
   <button mat-button routerLink="/register">Register</button>
   <button mat-button (click)="logout()">Logout</button>
 
-{{username}}
+  <span class="example-spacer">{{username$ | json}}</span>
+
 </mat-toolbar>
 
 <router-outlet></router-outlet>
-<!-- <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over" opened="false">
-    <mat-nav-list>
-      <a mat-list-item href="#">Login</a>
-      <a mat-list-item href="#">Register</a>
-      <a mat-list-item href="#">Logout</a>
-    </mat-nav-list>
-  </mat-sidenav>
 
-  <mat-sidenav-content>
-    <p>Your app content goes here.</p>
-  </mat-sidenav-content>
-</mat-sidenav-container> -->

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Angular.Migrations
 {
     /// <inheritdoc />
-    public partial class identity : Migration
+    public partial class AddingIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
