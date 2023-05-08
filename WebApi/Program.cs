@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging();
+
 builder.Services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase)
                 .AddXmlDataContractSerializerFormatters();
@@ -47,7 +50,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<GenericRepository<Product>, ProductsRepository>();
+builder.Services.AddScoped<IProductRepository, ProductsRepository>();
 
 var app = builder.BuildWithSpa();
 

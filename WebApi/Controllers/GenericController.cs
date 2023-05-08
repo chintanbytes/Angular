@@ -6,13 +6,13 @@ namespace Angular.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GenericController<D, T> : ControllerBase where T : class where D : class
+public class GenericController<D, T> : ControllerBase, IGenericController<D> where D : class where T : class
 {
-    private readonly ILogger<T> logger;
-    private readonly GenericRepository<T> repository;
+    private readonly ILogger<IGenericController<D>> logger;
+    private readonly IGenericRepository<T> repository;
     private readonly IMapper mapper;
 
-    public GenericController(ILogger<T> logger, GenericRepository<T> repository, IMapper mapper) : base()
+    public GenericController(ILogger<IGenericController<D>> logger, IGenericRepository<T> repository, IMapper mapper) : base()
     {
         this.logger = logger;
         this.repository = repository;

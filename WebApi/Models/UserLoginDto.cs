@@ -8,9 +8,4 @@ public class UserLoginDto
 
     [Required]
     public string Password { get; set; }
-
-    public UserLoginDto()
-    {
-    }
-
 }

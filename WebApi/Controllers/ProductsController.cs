@@ -6,12 +6,19 @@ using AutoMapper;
 
 namespace Angular.Controllers;
 
-public class ProductsController : GenericController<ProductDto, Product>
+public class ProductsController : GenericController<ProductDto, Product>, IProductController
+
 {
-    public ProductsController(ILogger<Product> logger, GenericRepository<Product> ProductRepository, IMapper mapper)
+    private readonly ILogger<IProductController> logger;
+    private readonly IProductRepository productRepository;
+    private readonly IMapper mapper;
+
+    public ProductsController(ILogger<IProductController> logger, IProductRepository ProductRepository, IMapper mapper)
     : base(logger, ProductRepository, mapper)
     {
-
+        this.logger = logger;
+        productRepository = ProductRepository;
+        this.mapper = mapper;
     }
 
     protected override int GetId(Product entity) => entity.ProductId;

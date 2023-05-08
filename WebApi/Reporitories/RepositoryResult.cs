@@ -14,11 +14,11 @@ public class Result<T>
 
     public static Result<T> SetSuccess(T data)
     {
-        return new Result<T>(true, data, null);
+        return new Result<T>(true, data, default(string));
     }
 
     public static Result<T> SetFailure(string errorMessage)
     {
-        return new Result<T>(false, default, errorMessage);
+        return new Result<T>(false, default(T), errorMessage);
     }
 }

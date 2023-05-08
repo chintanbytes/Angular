@@ -21,8 +21,4 @@ public class UserDto
 
     [Required]
     public string ConfirmPassword { get; set; }
-
-    public UserDto()
-    {
-    }
 }

@@ -5,7 +5,7 @@ namespace Angular.Models;
 public class ProductDto
 {
     [Required]
-    public string ProductName { get; set; } = null!;
+    public string ProductName { get; set; }
 
     [Required]
     public int? SupplierId { get; set; }

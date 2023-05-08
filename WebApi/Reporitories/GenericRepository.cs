@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Angular.Repositories;
 
-public class GenericRepository<T> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private readonly NorthwindContext dbContext;
-    private readonly ILogger<T> logger;
+    private readonly ILogger<IGenericRepository<T>> logger;
 
-    public GenericRepository(NorthwindContext context, ILogger<T> logger)
+    public GenericRepository(NorthwindContext context, ILogger<IGenericRepository<T>> logger)
     {
         this.dbContext = context;
         this.logger = logger;
@@ -70,10 +70,10 @@ public class GenericRepository<T> where T : class
             return Result<T>.SetFailure("The resource was not found.");
         }
 
-        dbContext.Entry(entity).State = EntityState.Modified;
+        dbContext.Entry(Dbentity).CurrentValues.SetValues(entity);
         await dbContext.SaveChangesAsync();
 
-        return Result<T>.SetSuccess(null);
+        return Result<T>.SetSuccess(entity);
     }
 
     public async Task<Result<T>> DeleteAsync(int id)
