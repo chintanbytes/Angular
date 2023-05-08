@@ -1,14 +1,14 @@
-using System.Security.Claims;
+using Angular.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
+namespace Angular.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
-[Produces("application/json")]
-public
-class UsersController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> logger;
     private readonly SignInManager<IdentityUser> signInManager;
@@ -26,14 +26,14 @@ class UsersController : ControllerBase
     //Create login end point
     [HttpPost]
     [Route("login")]
-    public async Task<IResult> LoginAsync([FromBody] UserInfo userInfo)
+    public async Task<IResult> LoginAsync([FromBody] UserLoginDto loginData)
     {
         if (ModelState.IsValid == false)
         {
             return Results.BadRequest();
         }
 
-        var result = await signInManager.PasswordSignInAsync(userInfo.Username, userInfo.Password, true, false);
+        var result = await signInManager.PasswordSignInAsync(loginData.Username, loginData.Password, true, false);
 
         if (result.Succeeded)
         {
@@ -57,16 +57,16 @@ class UsersController : ControllerBase
     //Create register end point
     [HttpPost]
     [Route("register")]
-    public async Task<IResult> RegisterAsync([FromBody] NewUserInfo newUserInfo)
+    public async Task<IResult> RegisterAsync([FromBody] UserDto userData)
     {
-        if (newUserInfo.Password != newUserInfo.ConfirmPassword)
+        if (userData.Password != userData.ConfirmPassword)
         {
             return Results.BadRequest();
         }
 
-        IdentityUser user = new() { UserName = newUserInfo.Username };
+        IdentityUser user = new() { UserName = userData.Username };
 
-        var createResult = await userManager.CreateAsync(user, newUserInfo.Password);
+        var createResult = await userManager.CreateAsync(user, userData.Password);
 
         if (!createResult.Succeeded)
         {

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Angular.DBContext;
 
-public partial class NorthwindContext : IdentityDbContext<IdentityUser>
+public partial class NorthwindContext : IdentityDbContext<ApplicationUser>
 {
     public NorthwindContext()
     {

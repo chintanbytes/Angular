@@ -12,6 +12,7 @@ public static class BuildExtention
                 options.SwaggerEndpoint("https://localhost:7080/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = "api";
             });
+            app.UseDeveloperExceptionPage();
         }
 
         app.UseRouting();

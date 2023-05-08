@@ -1,11 +1,14 @@
 using System.Reflection;
 using Angular.DBContext;
+using Angular.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase)
+                .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -21,8 +24,6 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
-
-    //options.OperationFilter<ReplaceEntityTypeNameFilter>();
 });
 
 builder.Services.AddDbContext<NorthwindContext>(c => c.UseSqlServer(
@@ -43,6 +44,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(o =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<GenericRepository<Product>, ProductsRepository>();
+
 var app = builder.BuildWithSpa();
 
 app.Run();
