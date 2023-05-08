@@ -4,13 +4,18 @@ using Angular.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
+using Angular.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogging();
 
 builder.Services.AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase)
+                .AddNewtonsoftJson(actions =>
+                {
+                    actions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                })
                 .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +32,7 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
+    options.OperationFilter<ReplaceEntityTypeNameFilter>();
 });
 
 builder.Services.AddDbContext<NorthwindContext>(c => c.UseSqlServer(
@@ -50,7 +56,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<IProductRepository, ProductsRepository>();
+builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 
 var app = builder.BuildWithSpa();
 

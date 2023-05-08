@@ -1,5 +1,7 @@
+using Angular.Models;
 using Angular.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Angular.Controllers;
@@ -20,10 +22,11 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     }
 
     /// <summary>
-    /// Get all entities of type <ref name="T"/> 
+    /// Get all entities of type T 
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [HttpHead]
     public async Task<ActionResult<IEnumerable<D>>> GetEntitiesAsync()
     {
         var result = await repository.GetAllAsync();
@@ -37,11 +40,11 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     }
 
     /// <summary>
-    /// Get entity of type <ref name="T"/> by it's Id
+    /// Get entity of type T by it's Id
     /// </summary>
     /// <param name="id">T Id</param>
     /// <returns>T</returns>
-    [HttpGet("{id}", Name = "Get" + nameof(D) + "ById")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<D>> GetEntityAsync([FromRoute] int id)
     {
         var result = await repository.GetByIdAsync(id);
@@ -54,7 +57,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     }
 
     /// <summary>
-    /// Create entity of type <ref name="T"/>
+    /// Create entity of type T
     /// </summary>
     /// <param name="entity">T</param>
     /// <returns>T</returns>
@@ -66,14 +69,14 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
         if (result.Success)
         {
             var dto = mapper.Map<D>(result.Data);
-            return CreatedAtRoute("Get" + nameof(T) + "ById", new { id = GetId(result.Data) }, dto);
+            return CreatedAtAction("GetEntityAsync", new { id = GetId(result.Data) }, dto);
         }
 
         return BadRequest();
     }
 
     /// <summary>
-    /// Update entity of type <ref name="T"/> by it's Id
+    /// Update entity of type T by it's Id
     /// </summary>
     /// <param name="id">T Id</param>
     /// <param name="entity">T</param>
@@ -98,7 +101,35 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     }
 
     /// <summary>
-    /// Delete entity of type <ref name="T"/> by it's Id 
+    /// Partitally update the entity of type T by it's Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="patchDocument"></param>
+    /// <returns></returns>
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PartiallyUpdateEntityAsync([FromRoute] int id, JsonPatchDocument<D> patchDocument)
+    {
+        var result = await repository.GetByIdAsync(id);
+        if (!result.Success)
+        {
+            return NotFound();
+        }
+
+        var entity = mapper.Map<D>(result.Data);
+        patchDocument.ApplyTo(entity);
+
+        mapper.Map(entity, result.Data);
+
+        result = await repository.UpdateAsync(id, result.Data);
+
+        if (result.Success)
+            return NoContent();
+        else
+            return BadRequest();
+    }
+
+    /// <summary>
+    /// Delete entity of type T by it's Id 
     /// </summary>
     /// <param name="id">T Id</param>
     /// <returns></returns>
@@ -118,7 +149,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    protected virtual int GetId(T entity)
+    protected virtual string GetId(T entity)
     {
         // Implement this method in derived classes to extract the entity ID
         // Example: return entity.Id;

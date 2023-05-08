@@ -2,6 +2,6 @@ using Angular.DBContext;
 
 namespace Angular.Repositories;
 
-public interface IProductRepository : IGenericRepository<Product>
+public interface IProductsRepository : IGenericRepository<Product>
 {
 }
