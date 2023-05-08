@@ -64,18 +64,19 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<Result<T>> UpdateAsync(int id, T entity)
     {
-        var Dbentity = await dbContext.Set<T>().FindAsync(id);
-        if (Dbentity == null)
+        try
         {
-            return Result<T>.SetFailure("The resource was not found.");
+            dbContext.Entry(entity).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
+
+            return Result<T>.SetSuccess(entity);
         }
-
-        dbContext.Entry(Dbentity).CurrentValues.SetValues(entity);
-        await dbContext.SaveChangesAsync();
-
-        return Result<T>.SetSuccess(entity);
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error updating a resource of type {type}.", typeof(T).Name);
+            return Result<T>.SetFailure("Error updating a resource.");
+        }
     }
-
     public async Task<Result<T>> DeleteAsync(int id)
     {
         var entity = await dbContext.Set<T>().FindAsync(id);

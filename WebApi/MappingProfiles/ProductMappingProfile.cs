@@ -1,13 +1,8 @@
 using Angular.DBContext;
-using AutoMapper;
 using Angular.Models;
 
-
 namespace Angular.MappingProfiles;
-public class ProductMappingProfile : Profile
+public class ProductMappingProfile : GenericMappingProfile<Product, ProductDto>
 {
-    public ProductMappingProfile()
-    {
-        CreateMap<Product, ProductDto>().ReverseMap();
-    }
+
 }

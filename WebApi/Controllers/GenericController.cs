@@ -6,7 +6,7 @@ namespace Angular.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GenericController<D, T> : ControllerBase, IGenericController<D> where D : class where T : class
+public class GenericController<D, T> : ControllerBase, IGenericController<D> where D : BaseDto
 {
     private readonly ILogger<IGenericController<D>> logger;
     private readonly IGenericRepository<T> repository;
@@ -81,10 +81,18 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEntityAsync([FromRoute] int id, [FromBody] D entity)
     {
-        var entityModel = mapper.Map<T>(entity);
-        var result = await repository.UpdateAsync(id, entityModel);
+        var result = await repository.GetByIdAsync(id);
+        if (!result.Success)
+        {
+            return NotFound();
+        }
+
+        mapper.Map(entity, result.Data);
+
+        result = await repository.UpdateAsync(id, result.Data);
+
         if (result.Success)
-            return Ok();
+            return NoContent();
         else
             return BadRequest();
     }

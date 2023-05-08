@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Angular.Models;
-public class UserDto
+public class UserDto : BaseDto
 {
     [Required]
     [MaxLength(100)]

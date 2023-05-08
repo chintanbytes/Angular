@@ -1,12 +1,8 @@
 using Angular.DBContext;
-using AutoMapper;
 using Angular.Models;
 
 namespace Angular.MappingProfiles;
-public class UserMappingProfile : Profile
+public class UserMappingProfile : GenericMappingProfile<ApplicationUser, UserDto>
 {
-    public UserMappingProfile()
-    {
-        CreateMap<ApplicationUser, UserDto>().ReverseMap();
-    }
+
 }

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Angular.Models;
-public class UserLoginDto
+public class UserLoginDto : BaseDto
 {
     [Required]
     public string Username { get; set; }

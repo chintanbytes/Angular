@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Angular.Models;
 
-public class ProductDto
+public class ProductDto : BaseDto
 {
     [Required]
     public string ProductName { get; set; }
@@ -23,4 +23,6 @@ public class ProductDto
     public short? UnitsOnOrder { get; set; }
 
     public short? ReorderLevel { get; set; }
+
+    public bool Discontinued { get; set; }
 }
