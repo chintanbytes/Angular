@@ -1,12 +1,12 @@
 
-using Angular.DBContext;
-using Angular.Models;
-using Angular.Repositories;
+using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Models;
+using MyShop.WebApi.Repositories;
 using AutoMapper;
 
-namespace Angular.Controllers;
+namespace MyShop.WebApi.Controllers;
 
-public class ProductsController : GenericController<ProductDto, Product>, IProductsController
+public class ProductsController : GenericController<ProductDto, Product, int>, IProductsController
 
 {
     private readonly ILogger<IProductsController> logger;
@@ -21,5 +21,5 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
         this.mapper = mapper;
     }
 
-    protected override string GetId(Product entity) => entity.ProductId.ToString();
+    protected override int GetId(Product entity) => entity.ProductId;
 }

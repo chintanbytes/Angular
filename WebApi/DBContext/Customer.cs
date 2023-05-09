@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Angular.DBContext;
+namespace MyShop.WebApi.DBContext;
 
 public partial class Customer
 {
+    public virtual ApplicationUser ApplicationUser { get; set; } =null!;
     public string CustomerId { get; set; } = null!;
 
     public string CompanyName { get; set; } = null!;

@@ -1,9 +1,9 @@
-using Angular.DBContext;
-using Angular.Models;
+using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Models;
 
-namespace Angular.Controllers;
+namespace MyShop.WebApi.Controllers;
 
-public interface IProductsController : IGenericController<ProductDto>
+public interface IProductsController : IGenericController<ProductDto, int>
 {
 
 }

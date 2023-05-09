@@ -1,8 +1,8 @@
-using Angular.Models;
+using MyShop.WebApi.Models;
 using AutoMapper;
 using System.Linq.Expressions;
 
-namespace Angular.MappingProfiles;
+namespace MyShop.WebApi.MappingProfiles;
 public class GenericMappingProfile<T, D> : Profile where T : class where D : BaseDto
 {
     public GenericMappingProfile()

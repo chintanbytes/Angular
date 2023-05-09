@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Angular.DBContext;
+namespace MyShop.WebApi.DBContext;
 
 public partial class OrdersQry
 {

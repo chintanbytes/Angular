@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Angular.Models;
+namespace MyShop.WebApi.Models;
 
 public class ProductDto : BaseDto
 {

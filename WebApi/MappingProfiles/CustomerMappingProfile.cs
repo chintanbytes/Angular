@@ -1,7 +1,7 @@
-using Angular.DBContext;
-using Angular.Models;
+using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Models;
 
-namespace Angular.MappingProfiles;
+namespace MyShop.WebApi.MappingProfiles;
 public class CustomerMappingProfile : GenericMappingProfile<Customer, CustomerDto>
 {
 

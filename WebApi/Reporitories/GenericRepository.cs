@@ -1,14 +1,14 @@
-using Angular.DBContext;
+using MyShop.WebApi.DBContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Angular.Repositories;
+namespace MyShop.WebApi.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : class
 {
-    private readonly NorthwindContext dbContext;
-    private readonly ILogger<IGenericRepository<T>> logger;
+    private readonly ApplicationDbContext dbContext;
+    private readonly ILogger<IGenericRepository<T, TId>> logger;
 
-    public GenericRepository(NorthwindContext context, ILogger<IGenericRepository<T>> logger)
+    public GenericRepository(ApplicationDbContext context, ILogger<IGenericRepository<T, TId>> logger)
     {
         this.dbContext = context;
         this.logger = logger;
@@ -35,7 +35,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
     }
 
-    public async Task<Result<T>> GetByIdAsync(int id)
+    public async Task<Result<T>> GetByIdAsync(TId id)
     {
         var entity = await dbContext.Set<T>().FindAsync(id);
 
@@ -62,7 +62,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
     }
 
-    public async Task<Result<T>> UpdateAsync(int id, T entity)
+    public async Task<Result<T>> UpdateAsync(TId id, T entity)
     {
         try
         {
@@ -77,7 +77,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             return Result<T>.SetFailure("Error updating a resource.");
         }
     }
-    public async Task<Result<T>> DeleteAsync(int id)
+    public async Task<Result<T>> DeleteAsync(TId id)
     {
         var entity = await dbContext.Set<T>().FindAsync(id);
         if (entity == null)

@@ -1,4 +1,4 @@
-namespace Angular.Middlewares;
+namespace MyShop.WebApi.Middlewares;
 public class CustomMiddleware
 {
     private readonly RequestDelegate _next;

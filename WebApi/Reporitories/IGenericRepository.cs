@@ -1,10 +1,10 @@
-namespace Angular.Repositories;
+namespace MyShop.WebApi.Repositories;
 
-public interface IGenericRepository<T>
+public interface IGenericRepository<T, TId>
 {
-    Task<Result<T>> GetByIdAsync(int id);
+    Task<Result<T>> GetByIdAsync(TId id);
     Task<Result<IEnumerable<T>>> GetAllAsync();
     Task<Result<T>> CreateAsync(T entity);
-    Task<Result<T>> UpdateAsync(int id, T entity);
-    Task<Result<T>> DeleteAsync(int id);
+    Task<Result<T>> UpdateAsync(TId id, T entity);
+    Task<Result<T>> DeleteAsync(TId id);
 }

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Angular.DBContext;
+namespace MyShop.WebApi.DBContext;
 
-public partial class NorthwindContext : IdentityDbContext<ApplicationUser>
+public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public NorthwindContext()
+    public ApplicationDbContext()
     {
     }
 
-    public NorthwindContext(DbContextOptions<NorthwindContext> options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }

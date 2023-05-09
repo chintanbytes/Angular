@@ -1,11 +1,11 @@
 using System.Reflection;
-using Angular.DBContext;
-using Angular.Repositories;
+using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using Angular.Filters;
+using MyShop.WebApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +24,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "My Test API",
+        Title = "My Shop API",
         Version = "v1",
-        Description = "My Test Api"
+        Description = "My Shop Api"
     });
     // Set the comments path for the Swagger JSON and UI.
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -35,11 +35,11 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<ReplaceEntityTypeNameFilter>();
 });
 
-builder.Services.AddDbContext<NorthwindContext>(c => c.UseSqlServer(
+builder.Services.AddDbContext<ApplicationDbContext>(c => c.UseSqlServer(
     connectionString: builder.Configuration.GetConnectionString("Default")
 ));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(o =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(o =>
 {
     o.Password.RequireDigit = false;
     o.Password.RequireLowercase = false;
@@ -49,7 +49,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(o =>
     o.Password.RequiredUniqueChars = 0;
     o.User.RequireUniqueEmail = false;
 })
-    .AddEntityFrameworkStores<NorthwindContext>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();

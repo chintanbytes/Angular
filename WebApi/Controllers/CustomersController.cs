@@ -1,11 +1,11 @@
-using Angular.DBContext;
-using Angular.Models;
-using Angular.Repositories;
+using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Models;
+using MyShop.WebApi.Repositories;
 using AutoMapper;
 
-namespace Angular.Controllers;
+namespace MyShop.WebApi.Controllers;
 
-public class CustomersController : GenericController<CustomerDto, Customer>, ICustomersController
+public class CustomersController : GenericController<CustomerDto, Customer, string>, ICustomersController
 
 {
     private readonly ILogger<ICustomersController> logger;

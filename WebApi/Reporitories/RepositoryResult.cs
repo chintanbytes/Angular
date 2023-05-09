@@ -1,4 +1,4 @@
-namespace Angular.Repositories;
+namespace MyShop.WebApi.Repositories;
 public class Result<T>
 {
     public bool Success { get; }

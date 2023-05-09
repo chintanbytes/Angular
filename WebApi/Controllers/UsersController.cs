@@ -1,22 +1,22 @@
-using Angular.Models;
+using MyShop.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MyShop.WebApi.DBContext;
 
-
-namespace Angular.Controllers;
+namespace MyShop.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> logger;
-    private readonly SignInManager<IdentityUser> signInManager;
-    private readonly UserManager<IdentityUser> userManager;
+    private readonly SignInManager<ApplicationUser> signInManager;
+    private readonly UserManager<ApplicationUser> userManager;
 
     public UsersController(ILogger<UsersController> logger,
-    SignInManager<IdentityUser> signInManager,
-    UserManager<IdentityUser> userManager)
+    SignInManager<ApplicationUser> signInManager,
+    UserManager<ApplicationUser> userManager)
     {
         this.logger = logger;
         this.signInManager = signInManager;
@@ -64,7 +64,7 @@ public class UsersController : ControllerBase
             return Results.BadRequest();
         }
 
-        IdentityUser user = new() { UserName = userData.Username };
+        ApplicationUser user = new() { UserName = userData.Username };
 
         var createResult = await userManager.CreateAsync(user, userData.Password);
 

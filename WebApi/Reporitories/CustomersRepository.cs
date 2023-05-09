@@ -1,13 +1,13 @@
-using Angular.DBContext;
+using MyShop.WebApi.DBContext;
 
-namespace Angular.Repositories;
+namespace MyShop.WebApi.Repositories;
 
-public class CustomersRepository : GenericRepository<Customer>, ICustomersRepository
+public class CustomersRepository : GenericRepository<Customer, string>, ICustomersRepository
 {
-    private readonly NorthwindContext dbcontext;
+    private readonly ApplicationDbContext dbcontext;
     private readonly ILogger<ICustomersRepository> logger;
 
-    public CustomersRepository(NorthwindContext Dbcontext, ILogger<ICustomersRepository> logger)
+    public CustomersRepository(ApplicationDbContext Dbcontext, ILogger<ICustomersRepository> logger)
     : base(Dbcontext, logger)
     {
         dbcontext = Dbcontext;

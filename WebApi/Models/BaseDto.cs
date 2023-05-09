@@ -1,4 +1,4 @@
-namespace Angular.Models;
+namespace MyShop.WebApi.Models;
 
 public class BaseDto
 {

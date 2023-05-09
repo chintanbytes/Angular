@@ -1,4 +1,4 @@
-namespace Angular.Filters;
+namespace MyShop.WebApi.Filters;
 
 using System;
 using System.Linq;

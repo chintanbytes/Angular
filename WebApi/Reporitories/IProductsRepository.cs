@@ -1,7 +1,7 @@
-using Angular.DBContext;
+using MyShop.WebApi.DBContext;
 
-namespace Angular.Repositories;
+namespace MyShop.WebApi.Repositories;
 
-public interface IProductsRepository : IGenericRepository<Product>
+public interface IProductsRepository : IGenericRepository<Product, int>
 {
 }

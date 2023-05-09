@@ -1,8 +1,8 @@
-using Angular.Models;
+using MyShop.WebApi.Models;
 
-namespace Angular.Controllers;
+namespace MyShop.WebApi.Controllers;
 
-public interface ICustomersController : IGenericController<CustomerDto>
+public interface ICustomersController : IGenericController<CustomerDto, string>
 {
 
 }
