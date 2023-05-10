@@ -1,21 +1,18 @@
-using System.ComponentModel.DataAnnotations;
+using MyShop.WebApi.CustomValidationAttributes;
 
 namespace MyShop.WebApi.Models;
 
+[ProductDtoValidationAttribute]
 public class ProductDto : BaseDto
 {
-    [Required]
-    public string ProductName { get; set; }
+    public string ProductName { get; set; } = null!;
 
-    [Required]
     public int? SupplierId { get; set; }
 
-    [Required]
     public int? CategoryId { get; set; }
 
     public string? QuantityPerUnit { get; set; }
 
-    [Required]
     public decimal? UnitPrice { get; set; }
 
     public short? UnitsInStock { get; set; }
@@ -24,5 +21,5 @@ public class ProductDto : BaseDto
 
     public short? ReorderLevel { get; set; }
 
-    public bool Discontinued { get; set; }
+    public bool Discontinued { get; set; } = false;
 }

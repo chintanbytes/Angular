@@ -3,6 +3,9 @@ using MyShop.WebApi.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Options;
 
 namespace MyShop.WebApi.Controllers;
 
@@ -116,7 +119,12 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
         }
 
         var entity = mapper.Map<D>(result.Data);
-        patchDocument.ApplyTo(entity);
+        patchDocument.ApplyTo(entity, ModelState);
+
+        if (!TryValidateModel(entity))
+        {
+            return ValidationProblem(ModelState);
+        }
 
         mapper.Map(entity, result.Data);
 
@@ -155,4 +163,11 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
         // Example: return entity.Id;
         throw new System.NotImplementedException();
     }
+
+    public override ActionResult ValidationProblem([ActionResultObjectValue] ModelStateDictionary modelSteteDictionary)
+    {
+        var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
+        return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
+    }
+
 }
