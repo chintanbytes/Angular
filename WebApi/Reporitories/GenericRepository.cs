@@ -1,5 +1,7 @@
 using MyShop.WebApi.DBContext;
 using Microsoft.EntityFrameworkCore;
+using MyShop.WebApi.ResourceParameters;
+using MyShop.WebApi.Helpers;
 
 namespace MyShop.WebApi.Repositories;
 
@@ -15,23 +17,18 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : cl
     }
 
     //create repo method for getting all entiries
-    public async Task<Result<IEnumerable<T>>> GetAllAsync()
+    public async Task<Result<PagedList<T>>> GetAllAsync(BaseResourceParameters parameters)
     {
         try
         {
-            var entity = await dbContext.Set<T>().ToListAsync();
-
-            if (entity == null || entity.Count == 0)
-            {
-                return Result<IEnumerable<T>>.SetFailure("The requested resource was not found.");
-            }
-
-            return Result<IEnumerable<T>>.SetSuccess(entity);
+            var collection = dbContext.Set<T>() as IQueryable<T>;
+            var entity = await PagedList<T>.CreateAsync(collection, parameters.PageNumber, parameters.PageSize);
+            return Result<PagedList<T>>.SetSuccess(entity);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error retrieving a resource {type}.", typeof(T).Name);
-            return Result<IEnumerable<T>>.SetFailure("Error retrieving a resource.");
+            return Result<PagedList<T>>.SetFailure("Error retrieving a resource.");
         }
     }
 

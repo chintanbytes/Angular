@@ -1,12 +1,13 @@
 using MyShop.WebApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using MyShop.WebApi.ResourceParameters;
 
 namespace MyShop.WebApi.Controllers;
 
 public interface IGenericController<D, TId> where D : BaseDto
 {
-    Task<ActionResult<IEnumerable<D>>> GetEntitiesAsync();
+    Task<ActionResult<IEnumerable<D>>> GetEntitiesAsync(BaseResourceParameters parameters);
 
     Task<ActionResult<D>> GetEntityAsync(TId id);
 

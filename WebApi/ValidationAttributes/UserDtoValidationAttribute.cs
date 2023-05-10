@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MyShop.WebApi.Models;
 
-namespace MyShop.WebApi.CustomValidationAttributes;
+namespace MyShop.WebApi.ValidationAttributes;
 
 public class UserDtoValidationAttribute : ValidationAttribute
 {
