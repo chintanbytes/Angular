@@ -3,7 +3,7 @@ public static class BuildExtention
     public static WebApplication BuildWithSpa(this WebApplicationBuilder builder)
     {
         var app = builder.Build();
-
+        app.UseHttpLogging();
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

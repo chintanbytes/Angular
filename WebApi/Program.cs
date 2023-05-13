@@ -8,10 +8,33 @@ using Newtonsoft.Json.Serialization;
 using MyShop.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using log4net;
+using log4net.Config;
+using Microsoft.AspNetCore.HttpLogging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLogging();
+Log.Logger = new LoggerConfiguration()
+       .MinimumLevel.Debug()
+       .WriteTo.Console() // Add console sink
+       .WriteTo.File("logs/app-.txt", rollingInterval: RollingInterval.Day) // Add file sink with desired log file path
+       .CreateLogger();
+
+// // Configure log4net
+// var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
+// XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
+builder.Services.AddLogging(builder =>
+{
+    builder.AddLog4Net();
+    builder.AddSerilog(); // Add Serilog as the logging provider
+});
+
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.All;
+});
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(actions =>
@@ -83,5 +106,4 @@ builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 
 var app = builder.BuildWithSpa();
-
 app.Run();

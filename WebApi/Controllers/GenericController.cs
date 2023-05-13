@@ -25,6 +25,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
         this.logger = logger;
         this.repository = repository;
         this.mapper = mapper;
+        this.logger.LogInformation("GenericController<D, T, TId> created");
     }
 
     /// <summary>
