@@ -8,26 +8,29 @@ using Newtonsoft.Json.Serialization;
 using MyShop.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using log4net;
-using log4net.Config;
+// using log4net;
+// using log4net.Config;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-       .MinimumLevel.Debug()
-       .WriteTo.Console() // Add console sink
-       .WriteTo.File("logs/app-.txt", rollingInterval: RollingInterval.Day) // Add file sink with desired log file path
-       .CreateLogger();
+//Read Configuration from appSettings
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
 
-// // Configure log4net
-// var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
-// XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+//Configure Serilog
+Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .CreateLogger();
+
+// Configure log4net
+// XmlConfigurator.Configure(new FileInfo("log4net.config"));
 
 builder.Services.AddLogging(builder =>
 {
-    builder.AddLog4Net();
+    //builder.AddLog4Net(); // Add Log4Net as the logging provider
     builder.AddSerilog(); // Add Serilog as the logging provider
 });
 
@@ -37,32 +40,32 @@ builder.Services.AddHttpLogging(options =>
 });
 
 builder.Services.AddControllers()
-                .AddNewtonsoftJson(actions =>
-                {
-                    actions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                })
-                .AddXmlDataContractSerializerFormatters()
-                .ConfigureApiBehaviorOptions(options =>
-                {
-                    options.InvalidModelStateResponseFactory = context =>
-                    {
-                        var problemDetailFactory = context.HttpContext.RequestServices
-                        .GetRequiredService<ProblemDetailsFactory>();
-                        var problemDetails = problemDetailFactory
-                        .CreateValidationProblemDetails(context.HttpContext, context.ModelState);
+    .AddNewtonsoftJson(actions =>
+    {
+        actions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    })
+    .AddXmlDataContractSerializerFormatters()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var problemDetailFactory = context.HttpContext.RequestServices
+            .GetRequiredService<ProblemDetailsFactory>();
+            var problemDetails = problemDetailFactory
+            .CreateValidationProblemDetails(context.HttpContext, context.ModelState);
 
-                        problemDetails.Detail = "Please check the errors list.";
-                        problemDetails.Instance = context.HttpContext.Request.Path;
+            problemDetails.Detail = "Please check the errors list.";
+            problemDetails.Instance = context.HttpContext.Request.Path;
 
-                        problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
-                        problemDetails.Title = "One or more validation errors occured";
+            problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
+            problemDetails.Title = "One or more validation errors occured";
 
-                        return new UnprocessableEntityObjectResult(problemDetails)
-                        {
-                            ContentTypes = { "application/problem+json" }
-                        };
-                    };
-                });
+            return new UnprocessableEntityObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 
