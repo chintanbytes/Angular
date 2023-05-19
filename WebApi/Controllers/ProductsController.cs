@@ -1,4 +1,4 @@
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 using MyShop.WebApi.Models;
 using MyShop.WebApi.Repositories;
 using AutoMapper;
@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace MyShop.WebApi.Controllers;
 
-public class ProductsController : GenericController<ProductDto, Product, int>, IProductsController
+public class ProductsController : GenericController<ProductDto, Product>, IProductsController
 
 {
     private readonly ILogger<IProductsController> logger;
@@ -52,6 +52,4 @@ public class ProductsController : GenericController<ProductDto, Product, int>, I
         var dto = mapper.Map<IEnumerable<ProductDto>>(result.Data);
         return Ok(dto);
     }
-
-    protected override int GetId(Product entity) => entity.ProductId;
 }

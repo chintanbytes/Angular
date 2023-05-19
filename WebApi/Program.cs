@@ -1,5 +1,5 @@
 using System.Reflection;
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 using MyShop.WebApi.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

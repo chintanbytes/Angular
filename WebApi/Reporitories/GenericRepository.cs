@@ -1,16 +1,16 @@
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using MyShop.WebApi.ResourceParameters;
 using MyShop.WebApi.Helpers;
 
 namespace MyShop.WebApi.Repositories;
 
-public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
     private readonly ApplicationDbContext dbContext;
-    private readonly ILogger<IGenericRepository<T, TId>> logger;
+    private readonly ILogger<IGenericRepository<T>> logger;
 
-    public GenericRepository(ApplicationDbContext context, ILogger<IGenericRepository<T, TId>> logger)
+    public GenericRepository(ApplicationDbContext context, ILogger<IGenericRepository<T>> logger)
     {
         this.dbContext = context;
         this.logger = logger;
@@ -32,7 +32,7 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : cl
         }
     }
 
-    public async Task<Result<T>> GetByIdAsync(TId id)
+    public async Task<Result<T>> GetByIdAsync(long id)
     {
         var entity = await dbContext.Set<T>().FindAsync(id);
 
@@ -59,7 +59,7 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : cl
         }
     }
 
-    public async Task<Result<T>> UpdateAsync(TId id, T entity)
+    public async Task<Result<T>> UpdateAsync(long id, T entity)
     {
         try
         {
@@ -74,7 +74,7 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : cl
             return Result<T>.SetFailure("Error updating a resource.");
         }
     }
-    public async Task<Result<T>> DeleteAsync(TId id)
+    public async Task<Result<T>> DeleteAsync(long id)
     {
         var entity = await dbContext.Set<T>().FindAsync(id);
         if (entity == null)

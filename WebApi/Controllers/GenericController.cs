@@ -8,24 +8,25 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using MyShop.WebApi.ResourceParameters;
 using System.Text.Json;
+using MyShop.WebApi.Data;
 
 namespace MyShop.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GenericController<D, T, TId> : ControllerBase, IGenericController<D, TId> where D : BaseDto
+public class GenericController<D, T> : ControllerBase, IGenericController<D> where D : BaseDto where T : BaseEntity
 {
-    private readonly ILogger<IGenericController<D, TId>> logger;
-    private readonly IGenericRepository<T, TId> repository;
+    private readonly ILogger<IGenericController<D>> logger;
+    private readonly IGenericRepository<T> repository;
     private readonly IMapper mapper;
 
-    public GenericController(ILogger<IGenericController<D, TId>> logger,
-    IGenericRepository<T, TId> repository, IMapper mapper) : base()
+    public GenericController(ILogger<IGenericController<D>> logger,
+    IGenericRepository<T> repository, IMapper mapper) : base()
     {
         this.logger = logger;
         this.repository = repository;
         this.mapper = mapper;
-        this.logger.LogInformation("GenericController<{D}, {T}, {TId}> created", typeof(D).Name, typeof(T).Name, typeof(TId).Name);
+        this.logger.LogInformation("GenericController<{D}, {T}> created", typeof(D).Name, typeof(T).Name);
     }
 
     /// <summary>
@@ -80,7 +81,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
     /// <param name="id">T Id</param>
     /// <returns>T</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<D>> GetEntityAsync([FromRoute] TId id)
+    public async Task<ActionResult<D>> GetEntityAsync([FromRoute] long id)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -117,7 +118,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
     /// <param name="entity">T</param>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateEntityAsync([FromRoute] TId id, [FromBody] D entity)
+    public async Task<IActionResult> UpdateEntityAsync([FromRoute] long id, [FromBody] D entity)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -142,7 +143,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
     /// <param name="patchDocument"></param>
     /// <returns></returns>
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PartiallyUpdateEntityAsync([FromRoute] TId id, JsonPatchDocument<D> patchDocument)
+    public async Task<IActionResult> PartiallyUpdateEntityAsync([FromRoute] long id, JsonPatchDocument<D> patchDocument)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -174,7 +175,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
     /// <param name="id">T Id</param>
     /// <returns></returns>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteEntityAsync([FromRoute] TId id)
+    public async Task<IActionResult> DeleteEntityAsync([FromRoute] long id)
     {
         var result = await repository.DeleteAsync(id);
         if (!result.Success)
@@ -189,12 +190,7 @@ public class GenericController<D, T, TId> : ControllerBase, IGenericController<D
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    protected virtual TId GetId(T entity)
-    {
-        // Implement this method in derived classes to extract the entity ID
-        // Example: return entity.Id;
-        throw new System.NotImplementedException();
-    }
+    protected long GetId(T entity) => entity.Id;
 
     public override ActionResult ValidationProblem([ActionResultObjectValue] ModelStateDictionary modelSteteDictionary)
     {

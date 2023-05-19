@@ -1,10 +1,10 @@
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 using MyShop.WebApi.Helpers;
 using MyShop.WebApi.ResourceParameters;
 
 namespace MyShop.WebApi.Repositories;
 
-public class ProductsRepository : GenericRepository<Product, int>, IProductsRepository
+public class ProductsRepository : GenericRepository<Product>, IProductsRepository
 {
     private readonly ApplicationDbContext dbContext;
     private readonly ILogger<IProductsRepository> logger;
@@ -21,13 +21,6 @@ public class ProductsRepository : GenericRepository<Product, int>, IProductsRepo
         try
         {
             var collection = dbContext.Products as IQueryable<Product>;
-
-            if (!string.IsNullOrWhiteSpace(parameters.CategoryId))
-            {
-                int categoryIdInt;
-                if (int.TryParse(parameters.CategoryId?.Trim(), out categoryIdInt))
-                    collection = collection.Where(p => p.CategoryId == categoryIdInt);
-            }
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchQuery))
             {

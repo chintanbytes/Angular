@@ -1,11 +1,11 @@
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 using MyShop.WebApi.Models;
 using MyShop.WebApi.Repositories;
 using AutoMapper;
 
 namespace MyShop.WebApi.Controllers;
 
-public class CustomersController : GenericController<CustomerDto, Customer, string>, ICustomersController
+public class CustomersController : GenericController<CustomerDto, Customer>, ICustomersController
 
 {
     private readonly ILogger<ICustomersController> logger;
@@ -19,6 +19,4 @@ public class CustomersController : GenericController<CustomerDto, Customer, stri
         this.customerRepository = customerRepository;
         this.mapper = mapper;
     }
-
-    protected override string GetId(Customer entity) => entity.CustomerId;
 }

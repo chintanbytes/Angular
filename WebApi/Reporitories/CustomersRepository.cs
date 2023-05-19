@@ -1,8 +1,8 @@
-using MyShop.WebApi.DBContext;
+using MyShop.WebApi.Data;
 
 namespace MyShop.WebApi.Repositories;
 
-public class CustomersRepository : GenericRepository<Customer, string>, ICustomersRepository
+public class CustomersRepository : GenericRepository<Customer>, ICustomersRepository
 {
     private readonly ApplicationDbContext dbcontext;
     private readonly ILogger<ICustomersRepository> logger;

@@ -5,17 +5,17 @@ using MyShop.WebApi.ResourceParameters;
 
 namespace MyShop.WebApi.Controllers;
 
-public interface IGenericController<D, TId> where D : BaseDto
+public interface IGenericController<D> where D : BaseDto
 {
     Task<ActionResult<IEnumerable<D>>> GetEntitiesAsync(BaseResourceParameters parameters);
 
-    Task<ActionResult<D>> GetEntityAsync(TId id);
+    Task<ActionResult<D>> GetEntityAsync(long id);
 
     Task<IActionResult> CreateEntityAsync(D entity);
 
-    Task<IActionResult> UpdateEntityAsync(TId id, D entity);
+    Task<IActionResult> UpdateEntityAsync(long id, D entity);
 
-    Task<IActionResult> DeleteEntityAsync(TId id);
+    Task<IActionResult> DeleteEntityAsync(long id);
 
-    Task<IActionResult> PartiallyUpdateEntityAsync(TId id, JsonPatchDocument<D> patchDocument);
+    Task<IActionResult> PartiallyUpdateEntityAsync(long id, JsonPatchDocument<D> patchDocument);
 }
