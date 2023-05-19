@@ -1,4 +1,4 @@
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 using MyShop.WebApi.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using MyShop.WebApi.Data;
+using MyShop.WebApi.ResourceParameters;
+using MyShop.WebApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyShop.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+// [Authorize]
 public class GenericController<D, T> : ControllerBase, IGenericController<D> where D : BaseDto where T : BaseEntity
 {
     private readonly ILogger<IGenericController<D>> logger;
@@ -33,7 +37,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="id">T Id</param>
     /// <returns>T</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<D>> GetEntityAsync([FromRoute] long id)
+    public async Task<ActionResult<D>> GetByIdAsync([FromRoute] long id)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -50,7 +54,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="entity">T</param>
     /// <returns>T</returns>
     [HttpPost]
-    public async Task<IActionResult> CreateEntityAsync([FromBody] D entity)
+    public virtual async Task<IActionResult> CreateAsync([FromBody] D entity)
     {
         var entityModel = mapper.Map<T>(entity);
         var result = await repository.CreateAsync(entityModel);
@@ -70,7 +74,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="entity">T</param>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateEntityAsync([FromRoute] long id, [FromBody] D entity)
+    public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] D entity)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -95,7 +99,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="patchDocument"></param>
     /// <returns></returns>
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PartiallyUpdateEntityAsync([FromRoute] long id, JsonPatchDocument<D> patchDocument)
+    public async Task<IActionResult> PartiallyUpdateAsync([FromRoute] long id, JsonPatchDocument<D> patchDocument)
     {
         var result = await repository.GetByIdAsync(id);
         if (!result.Success)
@@ -127,7 +131,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="id">T Id</param>
     /// <returns></returns>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteEntityAsync([FromRoute] long id)
+    public async Task<IActionResult> DeleteAsync([FromRoute] long id)
     {
         var result = await repository.DeleteAsync(id);
         if (!result.Success)
@@ -143,6 +147,19 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="entity"></param>
     /// <returns></returns>
     protected long GetId(T entity) => entity.Id;
+
+    protected string? createResourceUri(BaseResourceParameters parameters, ResourceUriType uriType, string methodName)
+    {
+        switch (uriType)
+        {
+            case ResourceUriType.PreviousPage:
+                return Url.Link(methodName, new { pageNumber = parameters.PageNumber - 1, pageSize = parameters.PageSize });
+            case ResourceUriType.NextPage:
+                return Url.Link(methodName, new { pageNumber = parameters.PageNumber + 1, pageSize = parameters.PageSize });
+            default:
+                return Url.Link(methodName, new { pageNumber = parameters.PageNumber, pageSize = parameters.PageSize });
+        }
+    }
 
     public override ActionResult ValidationProblem([ActionResultObjectValue] ModelStateDictionary modelSteteDictionary)
     {

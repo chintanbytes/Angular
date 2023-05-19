@@ -1,14 +1,16 @@
 using MyShop.WebApi.Data;
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 using MyShop.WebApi.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyShop.WebApi.ResourceParameters;
 using System.Text.Json;
 using MyShop.WebApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyShop.WebApi.Controllers;
 
+[Authorize]
 public class ProductsController : GenericController<ProductDto, Product>, IProductsController
 {
     private readonly ILogger<IProductsController> logger;
@@ -27,9 +29,9 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
     /// Get all entities of type Product
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet(Name = "GetProducts")]
     [HttpHead]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetEntitiesAsync([FromQuery] ProductResourceParameters parameters)
+    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllAsync([FromQuery] ProductResourceParameters parameters)
     {
         var result = await productRepository.GetAllAsync(parameters);
 
@@ -38,8 +40,8 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
             return NotFound();
         }
 
-        var PreviousPage = result.Data.HasPrevious ? createEntitiesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
-        var NextPage = result.Data.HasNext ? createEntitiesResourceUri(parameters, ResourceUriType.NextPage) : null;
+        var PreviousPage = result.Data.HasPrevious ? createResourceUri(parameters, ResourceUriType.PreviousPage, "GetProducts") : null;
+        var NextPage = result.Data.HasNext ? createResourceUri(parameters, ResourceUriType.NextPage, "GetProducts") : null;
 
         var paginationMetadata = new
         {
@@ -55,18 +57,5 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
 
         var dto = mapper.Map<IEnumerable<ProductDto>>(result.Data);
         return Ok(dto);
-    }
-
-    private string? createEntitiesResourceUri(ProductResourceParameters parameters, ResourceUriType uriType)
-    {
-        switch (uriType)
-        {
-            case ResourceUriType.PreviousPage:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber - 1, pageSize = parameters.PageSize });
-            case ResourceUriType.NextPage:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber + 1, pageSize = parameters.PageSize });
-            default:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber, pageSize = parameters.PageSize });
-        }
     }
 }

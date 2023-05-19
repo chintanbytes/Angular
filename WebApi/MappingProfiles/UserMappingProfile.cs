@@ -1,5 +1,5 @@
 using MyShop.WebApi.Data;
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 
 namespace MyShop.WebApi.MappingProfiles;
 public class UserMappingProfile : GenericMappingProfile<ApplicationUser, UserDto>

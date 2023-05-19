@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyShop.WebApi.Models;
+namespace MyShop.WebApi.Dtos;
 public class UserLoginDto : BaseDto
 {
     [Required]

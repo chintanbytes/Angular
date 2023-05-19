@@ -297,7 +297,6 @@ namespace Angular.Migrations
                         .HasColumnType("BIGINT");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -317,18 +316,15 @@ namespace Angular.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("ModifiedById");
 
-                    b.HasIndex("PhoneNumberId")
-                        .IsUnique();
+                    b.HasIndex("PhoneNumberId");
 
                     b.ToTable("Customers");
                 });
@@ -346,7 +342,6 @@ namespace Angular.Migrations
                         .HasColumnType("BIGINT");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -373,25 +368,22 @@ namespace Angular.Migrations
                     b.Property<byte[]>("Photo")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<long?>("ReportsTo")
+                    b.Property<long?>("ReportsToId")
                         .HasColumnType("BIGINT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("ModifiedById");
 
-                    b.HasIndex("PhoneNumberId")
-                        .IsUnique();
+                    b.HasIndex("PhoneNumberId");
 
-                    b.HasIndex("ReportsTo");
+                    b.HasIndex("ReportsToId");
 
                     b.ToTable("Employees");
                 });
@@ -442,8 +434,7 @@ namespace Angular.Migrations
 
                     b.HasIndex("ModifiedById");
 
-                    b.HasIndex("ShippingAddressId")
-                        .IsUnique();
+                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders");
                 });
@@ -513,14 +504,14 @@ namespace Angular.Migrations
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Home")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -637,16 +628,14 @@ namespace Angular.Migrations
             modelBuilder.Entity("MyShop.WebApi.Data.Customer", b =>
                 {
                     b.HasOne("MyShop.WebApi.Data.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Customer", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyShop.WebApi.Data.ApplicationUser", "ApplicationUser")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Customer", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("MyShop.WebApi.Data.ApplicationUser", "CreatedBy")
                         .WithMany()
@@ -657,8 +646,8 @@ namespace Angular.Migrations
                         .HasForeignKey("ModifiedById");
 
                     b.HasOne("MyShop.WebApi.Data.PhoneNumber", "PhoneNumber")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Customer", "PhoneNumberId")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -676,16 +665,14 @@ namespace Angular.Migrations
             modelBuilder.Entity("MyShop.WebApi.Data.Employee", b =>
                 {
                     b.HasOne("MyShop.WebApi.Data.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Employee", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyShop.WebApi.Data.ApplicationUser", "ApplicationUser")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Employee", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("MyShop.WebApi.Data.ApplicationUser", "CreatedBy")
                         .WithMany()
@@ -696,14 +683,14 @@ namespace Angular.Migrations
                         .HasForeignKey("ModifiedById");
 
                     b.HasOne("MyShop.WebApi.Data.PhoneNumber", "PhoneNumber")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Employee", "PhoneNumberId")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyShop.WebApi.Data.Employee", "ReportsToNavigation")
+                    b.HasOne("MyShop.WebApi.Data.Employee", "ReportsTo")
                         .WithMany("InverseReportsToNavigation")
-                        .HasForeignKey("ReportsTo");
+                        .HasForeignKey("ReportsToId");
 
                     b.Navigation("Address");
 
@@ -715,7 +702,7 @@ namespace Angular.Migrations
 
                     b.Navigation("PhoneNumber");
 
-                    b.Navigation("ReportsToNavigation");
+                    b.Navigation("ReportsTo");
                 });
 
             modelBuilder.Entity("MyShop.WebApi.Data.Order", b =>
@@ -737,8 +724,8 @@ namespace Angular.Migrations
                         .HasForeignKey("ModifiedById");
 
                     b.HasOne("MyShop.WebApi.Data.Address", "ShippingAddress")
-                        .WithOne()
-                        .HasForeignKey("MyShop.WebApi.Data.Order", "ShippingAddressId")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

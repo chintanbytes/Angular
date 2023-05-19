@@ -2,15 +2,9 @@
 
 public partial class Order : BaseEntity
 {
-    public long? CustomerId { get; set; }
-
-    public long? EmployeeId { get; set; }
-
     public DateTime? OrderDate { get; set; }
 
     public DateTime? ShippedDate { get; set; }
-
-    public long ShippingAddressId { get; set; }
 
     public virtual Customer? Customer { get; set; }
 

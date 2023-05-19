@@ -1,4 +1,4 @@
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 using AutoMapper;
 using System.Linq.Expressions;
 

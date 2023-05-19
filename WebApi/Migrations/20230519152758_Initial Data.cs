@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Angular.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Database_Migrations : Migration
+    public partial class InitialData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,9 +89,7 @@ namespace Angular.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -200,13 +198,11 @@ namespace Angular.Migrations
                     PhoneNumberId = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Cell = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Home = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,9 +230,7 @@ namespace Angular.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -259,15 +253,13 @@ namespace Angular.Migrations
                 {
                     CustomerId = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AddressId = table.Column<long>(type: "BIGINT", nullable: false),
                     PhoneNumberId = table.Column<long>(type: "BIGINT", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -282,8 +274,7 @@ namespace Angular.Migrations
                         name: "FK_Customers_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Customers_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
@@ -308,19 +299,17 @@ namespace Angular.Migrations
                 {
                     EmployeeId = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AddressId = table.Column<long>(type: "BIGINT", nullable: false),
-                    PhoneNumberId = table.Column<long>(type: "BIGINT", nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReportsTo = table.Column<long>(type: "BIGINT", nullable: true),
+                    AddressId = table.Column<long>(type: "BIGINT", nullable: false),
+                    PhoneNumberId = table.Column<long>(type: "BIGINT", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReportsToId = table.Column<long>(type: "BIGINT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -335,8 +324,7 @@ namespace Angular.Migrations
                         name: "FK_Employees_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Employees_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
@@ -348,8 +336,8 @@ namespace Angular.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Employees_Employees_ReportsTo",
-                        column: x => x.ReportsTo,
+                        name: "FK_Employees_Employees_ReportsToId",
+                        column: x => x.ReportsToId,
                         principalTable: "Employees",
                         principalColumn: "EmployeeId");
                     table.ForeignKey(
@@ -366,17 +354,15 @@ namespace Angular.Migrations
                 {
                     OrderId = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<long>(type: "BIGINT", nullable: true),
-                    EmployeeId = table.Column<long>(type: "BIGINT", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ShippedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CustomerId = table.Column<long>(type: "BIGINT", nullable: true),
+                    EmployeeId = table.Column<long>(type: "BIGINT", nullable: true),
                     ShippingAddressId = table.Column<long>(type: "BIGINT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -415,16 +401,14 @@ namespace Angular.Migrations
                 {
                     OrderDetailId = table.Column<long>(type: "BIGINT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<long>(type: "BIGINT", nullable: false),
-                    ProductId = table.Column<long>(type: "BIGINT", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<short>(type: "smallint", nullable: false),
+                    OrderId = table.Column<long>(type: "BIGINT", nullable: false),
+                    ProductId = table.Column<long>(type: "BIGINT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -505,14 +489,12 @@ namespace Angular.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_AddressId",
                 table: "Customers",
-                column: "AddressId",
-                unique: true);
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_ApplicationUserId",
                 table: "Customers",
-                column: "ApplicationUserId",
-                unique: true);
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CreatedById",
@@ -527,20 +509,17 @@ namespace Angular.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_PhoneNumberId",
                 table: "Customers",
-                column: "PhoneNumberId",
-                unique: true);
+                column: "PhoneNumberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_AddressId",
                 table: "Employees",
-                column: "AddressId",
-                unique: true);
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_ApplicationUserId",
                 table: "Employees",
-                column: "ApplicationUserId",
-                unique: true);
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_CreatedById",
@@ -555,13 +534,12 @@ namespace Angular.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_PhoneNumberId",
                 table: "Employees",
-                column: "PhoneNumberId",
-                unique: true);
+                column: "PhoneNumberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_ReportsTo",
+                name: "IX_Employees_ReportsToId",
                 table: "Employees",
-                column: "ReportsTo");
+                column: "ReportsToId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_CreatedById",
@@ -606,8 +584,7 @@ namespace Angular.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShippingAddressId",
                 table: "Orders",
-                column: "ShippingAddressId",
-                unique: true);
+                column: "ShippingAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhoneNumbers_CreatedById",

@@ -1,27 +1,38 @@
 using MyShop.WebApi.Data;
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 using MyShop.WebApi.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyShop.WebApi.ResourceParameters;
 using System.Text.Json;
 using MyShop.WebApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace MyShop.WebApi.Controllers;
 
+// [Authorize]
 public class CustomersController : GenericController<CustomerDto, Customer>, ICustomersController
 
 {
     private readonly ILogger<ICustomersController> logger;
     private readonly ICustomersRepository customerRepository;
     private readonly IMapper mapper;
+    private readonly SignInManager<ApplicationUser> signInManager;
+    private readonly UserManager<ApplicationUser> userManager;
 
-    public CustomersController(ILogger<ICustomersController> logger, ICustomersRepository customerRepository, IMapper mapper)
+    public CustomersController(ILogger<ICustomersController> logger,
+    ICustomersRepository customerRepository,
+    IMapper mapper,
+    SignInManager<ApplicationUser> signInManager,
+    UserManager<ApplicationUser> userManager)
     : base(logger, customerRepository, mapper)
     {
         this.logger = logger;
         this.customerRepository = customerRepository;
         this.mapper = mapper;
+        this.signInManager = signInManager;
+        this.userManager = userManager;
     }
 
     /// <summary>
@@ -30,7 +41,7 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
     /// <returns></returns>
     [HttpGet(Name = "GetCustomers")]
     [HttpHead]
-    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetEntitiesAsync([FromQuery] CustomerResourceParameters parameters)
+    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllAsync([FromQuery] CustomerResourceParameters parameters)
     {
         var result = await customerRepository.GetAllAsync(parameters);
 
@@ -39,8 +50,8 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
             return NotFound();
         }
 
-        var PreviousPage = result.Data.HasPrevious ? createEntitiesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
-        var NextPage = result.Data.HasNext ? createEntitiesResourceUri(parameters, ResourceUriType.NextPage) : null;
+        var PreviousPage = result.Data.HasPrevious ? createResourceUri(parameters, ResourceUriType.PreviousPage, "GetCustomers") : null;
+        var NextPage = result.Data.HasNext ? createResourceUri(parameters, ResourceUriType.NextPage, "GetCustomers") : null;
 
         var paginationMetadata = new
         {
@@ -59,16 +70,28 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
 
     }
 
-    private string? createEntitiesResourceUri(CustomerResourceParameters parameters, ResourceUriType uriType)
+    /// <summary>
+    /// Create entity of type T
+    /// </summary>
+    /// <param name="entity">T</param>
+    /// <returns>T</returns>
+    [HttpPost]
+    public override async Task<IActionResult> CreateAsync([FromBody] CustomerDto entity)
     {
-        switch (uriType)
+        if (entity.Password != entity.ConfirmPassword)
         {
-            case ResourceUriType.PreviousPage:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber - 1, pageSize = parameters.PageSize });
-            case ResourceUriType.NextPage:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber + 1, pageSize = parameters.PageSize });
-            default:
-                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber, pageSize = parameters.PageSize });
+            return BadRequest();
         }
+
+        Customer user = mapper.Map<Customer>(entity);
+
+        var createResult = await userManager.CreateAsync(user.ApplicationUser, entity.Password);
+
+        if (!createResult.Succeeded)
+        {
+            return BadRequest();
+        }
+
+        return await base.CreateAsync(entity);
     }
 }

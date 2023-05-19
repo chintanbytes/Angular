@@ -1,6 +1,6 @@
 using MyShop.WebApi.ValidationAttributes;
 
-namespace MyShop.WebApi.Models;
+namespace MyShop.WebApi.Dtos;
 
 [ProductDtoValidationAttribute]
 public class ProductDto : BaseDto

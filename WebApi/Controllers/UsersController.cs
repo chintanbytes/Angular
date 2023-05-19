@@ -1,4 +1,4 @@
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

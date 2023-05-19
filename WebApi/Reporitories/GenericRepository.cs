@@ -44,7 +44,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return Result<T>.SetSuccess(entity);
     }
 
-    public async Task<Result<T>> CreateAsync(T entity)
+    public virtual async Task<Result<T>> CreateAsync(T entity)
     {
         try
         {

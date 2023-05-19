@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 
 namespace MyShop.WebApi.ValidationAttributes;
 

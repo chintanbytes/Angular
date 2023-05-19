@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using MyShop.WebApi.Models;
+using MyShop.WebApi.Dtos;
 
 namespace MyShop.WebApi.ValidationAttributes;
 
@@ -7,14 +7,11 @@ public class UserDtoValidationAttribute : ValidationAttribute
 {
     public override bool IsValid(object? value)
     {
-        var userDto = value as UserDto;
-        if (userDto == null || userDto.GetType() != typeof(UserDto))
+        if (value != null  && value is UserDto dto)
         {
-            return false;
+            return dto.Password == dto.ConfirmPassword && !string.IsNullOrEmpty(dto.Username);
         }
 
-        return userDto.Password != userDto.ConfirmPassword && !string.IsNullOrEmpty(userDto.Username);
+        return false;
     }
 }
-
-
