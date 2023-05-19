@@ -1,3 +1,5 @@
+using MyShop.WebApi.Data;
+
 namespace MyShop.WebApi.ResourceParameters;
 
 public class BaseResourceParameters

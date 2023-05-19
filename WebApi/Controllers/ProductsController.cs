@@ -5,11 +5,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyShop.WebApi.ResourceParameters;
 using System.Text.Json;
+using MyShop.WebApi.Helpers;
 
 namespace MyShop.WebApi.Controllers;
 
 public class ProductsController : GenericController<ProductDto, Product>, IProductsController
-
 {
     private readonly ILogger<IProductsController> logger;
     private readonly IProductsRepository productRepository;
@@ -23,8 +23,12 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
         this.mapper = mapper;
     }
 
+    /// <summary>
+    /// Get all entities of type Product
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
-    [Route("Search")]
+    [HttpHead]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetEntitiesAsync([FromQuery] ProductResourceParameters parameters)
     {
         var result = await productRepository.GetAllAsync(parameters);
@@ -34,8 +38,8 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
             return NotFound();
         }
 
-        int? PreviousPage = result.Data.HasPrevious ? result.Data.CurrentPage - 1 : null;
-        int? NextPage = result.Data.HasNext ? result.Data.CurrentPage + 1 : null;
+        var PreviousPage = result.Data.HasPrevious ? createEntitiesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
+        var NextPage = result.Data.HasNext ? createEntitiesResourceUri(parameters, ResourceUriType.NextPage) : null;
 
         var paginationMetadata = new
         {
@@ -51,5 +55,18 @@ public class ProductsController : GenericController<ProductDto, Product>, IProdu
 
         var dto = mapper.Map<IEnumerable<ProductDto>>(result.Data);
         return Ok(dto);
+    }
+
+    private string? createEntitiesResourceUri(ProductResourceParameters parameters, ResourceUriType uriType)
+    {
+        switch (uriType)
+        {
+            case ResourceUriType.PreviousPage:
+                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber - 1, pageSize = parameters.PageSize });
+            case ResourceUriType.NextPage:
+                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber + 1, pageSize = parameters.PageSize });
+            default:
+                return Url.Link("GetCustomers", new { pageNumber = parameters.PageNumber, pageSize = parameters.PageSize });
+        }
     }
 }

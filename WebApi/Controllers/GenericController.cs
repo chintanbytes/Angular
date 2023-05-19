@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
-using MyShop.WebApi.ResourceParameters;
-using System.Text.Json;
 using MyShop.WebApi.Data;
 
 namespace MyShop.WebApi.Controllers;
@@ -28,52 +26,6 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
         this.mapper = mapper;
         this.logger.LogInformation("GenericController<{D}, {T}> created", typeof(D).Name, typeof(T).Name);
     }
-
-    /// <summary>
-    /// Get all entities of type T 
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    [HttpHead]
-    public async Task<ActionResult<IEnumerable<D>>> GetEntitiesAsync([FromQuery] BaseResourceParameters parameters)
-    {
-        var result = await repository.GetAllAsync(parameters);
-        if (result.Success)
-        {
-            int? PreviousPage = result.Data.HasPrevious ? result.Data.CurrentPage - 1 : null;
-            int? NextPage = result.Data.HasNext ? result.Data.CurrentPage + 1 : null;
-
-            var paginationMetadata = new
-            {
-                TotalCount = result.Data.TotalCount,
-                PageSize = result.Data.PageSize,
-                CurrentPage = result.Data.CurrentPage,
-                TotalPages = result.Data.TotalPages,
-                PreviousPage = PreviousPage,
-                NextPage = NextPage
-            };
-
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
-
-            var dto = mapper.Map<IEnumerable<D>>(result.Data);
-            return Ok(dto);
-        }
-
-        return NoContent();
-    }
-
-    // protected string? createEntitiesResourceUri(BaseResourceParameters parameters, ResourceUriType uriType)
-    // {
-    //     switch (uriType)
-    //     {
-    //         case ResourceUriType.PreviousPage:
-    //             return Url.Link("Get" + nameof(T), new { pageNumber = parameters.PageNumber - 1, pageSize = parameters.PageSize });
-    //         case ResourceUriType.NextPage:
-    //             return Url.Link("Get" + nameof(T), new { pageNumber = parameters.PageNumber + 1, pageSize = parameters.PageSize });
-    //         default:
-    //             return Url.Link("Get" + nameof(T), new { pageNumber = parameters.PageNumber, pageSize = parameters.PageSize });
-    //     }
-    // }
 
     /// <summary>
     /// Get entity of type T by it's Id
