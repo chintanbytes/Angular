@@ -28,7 +28,16 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        // Disable lazy loading
+        //optionsBuilder.UseLazyLoadingProxies(false);
+
+        // Enable eager loading for all navigation properties
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
+
+        base.OnConfiguring(optionsBuilder);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

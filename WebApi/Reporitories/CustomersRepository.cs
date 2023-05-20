@@ -20,7 +20,7 @@ public class CustomersRepository : GenericRepository<Customer>, ICustomersReposi
     {
         try
         {
-            var collection = dbContext.Products as IQueryable<Customer>;
+            var collection = dbContext.Customers as IQueryable<Customer>;
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchQuery))
             {

@@ -75,7 +75,7 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
     /// </summary>
     /// <param name="entity">T</param>
     /// <returns>T</returns>
-    [HttpPost]
+    [HttpPost(Name = "CreateCustomer")]
     public override async Task<IActionResult> CreateAsync([FromBody] CustomerDto entity)
     {
         if (entity.Password != entity.ConfirmPassword)
@@ -83,15 +83,23 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
             return BadRequest();
         }
 
-        Customer user = mapper.Map<Customer>(entity);
+        var customer = mapper.Map<Customer>(entity);
 
-        var createResult = await userManager.CreateAsync(user.ApplicationUser, entity.Password);
+        //new
+        var createResult = await userManager.CreateAsync(customer.ApplicationUser, entity.Password);
 
         if (!createResult.Succeeded)
         {
             return BadRequest();
         }
+        //customer.ApplicationUser.Id
+        var result = await customerRepository.CreateAsync(customer);
+        if (result.Success)
+        {
+            var dto = mapper.Map<CustomerDto>(result.Data);
+            return CreatedAtAction("CreateCustomer", new { id = result.Data.Id }, dto);
+        }
 
-        return await base.CreateAsync(entity);
+        return BadRequest();
     }
 }

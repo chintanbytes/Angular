@@ -26,6 +26,6 @@ public class CustomerMappingProfile : GenericMappingProfile<Customer, CustomerDt
                 FirstName = src.FirstName,
                 LastName = src.LastName,
                 DateOfBirth = src.DateOfBirth
-            }));
+            })).ReverseMap();
     }
 }
