@@ -24,4 +24,8 @@ public class ApplicationUser : IdentityUser
 
         return age;
     }
+
+    public virtual Customer? Customer { get; set; }
+    public virtual Employee? Employee { get; set; }
+
 }

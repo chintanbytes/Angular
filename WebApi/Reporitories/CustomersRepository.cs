@@ -29,8 +29,22 @@ public class CustomersRepository : GenericRepository<Customer>, ICustomersReposi
                 collection = collection.Where(p => p.ApplicationUser.FirstName.Contains(parameters.SearchQuery!));
             }
 
+            if (!string.IsNullOrWhiteSpace(parameters.OrderBy))
+            {
+                parameters.OrderBy = parameters.OrderBy.Trim();
+                if (parameters.OrderBy.Equals("Name"))
+                    collection = collection.OrderBy(p => p.ApplicationUser.FirstName).ThenBy(p => p.ApplicationUser.LastName);
+            }
+
+
             var entity = await PagedList<Customer>.CreateAsync(collection, parameters.PageNumber, parameters.PageSize);
 
+            foreach (var item in entity)
+            {
+                var x = item.ApplicationUser;
+                var y = item.Address;
+                var z = item.PhoneNumber;
+            }
             return Result<PagedList<Customer>>.SetSuccess(entity);
         }
         catch (Exception ex)

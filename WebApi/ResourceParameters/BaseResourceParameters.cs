@@ -16,4 +16,6 @@ public class BaseResourceParameters
     }
 
     public string? SearchQuery { get; set; }
+
+    public string? Fields { get; set; }
 }

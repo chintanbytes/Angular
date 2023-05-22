@@ -37,6 +37,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="id">T Id</param>
     /// <returns>T</returns>
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<D>> GetByIdAsync([FromRoute] long id)
     {
         var result = await repository.GetByIdAsync(id);
@@ -54,6 +55,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="entity">T</param>
     /// <returns>T</returns>
     [HttpPost]
+    [Authorize]
     public virtual async Task<IActionResult> CreateAsync([FromBody] D entity)
     {
         var entityModel = mapper.Map<T>(entity);
@@ -74,6 +76,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="entity">T</param>
     /// <returns></returns>
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] D entity)
     {
         var result = await repository.GetByIdAsync(id);
@@ -99,6 +102,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="patchDocument"></param>
     /// <returns></returns>
     [HttpPatch("{id}")]
+    [Authorize]
     public async Task<IActionResult> PartiallyUpdateAsync([FromRoute] long id, JsonPatchDocument<D> patchDocument)
     {
         var result = await repository.GetByIdAsync(id);
@@ -131,6 +135,7 @@ public class GenericController<D, T> : ControllerBase, IGenericController<D> whe
     /// <param name="id">T Id</param>
     /// <returns></returns>
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteAsync([FromRoute] long id)
     {
         var result = await repository.DeleteAsync(id);

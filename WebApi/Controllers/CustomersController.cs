@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MyShop.WebApi.Controllers;
 
-// [Authorize]
+
 public class CustomersController : GenericController<CustomerDto, Customer>, ICustomersController
 
 {
@@ -41,6 +41,7 @@ public class CustomersController : GenericController<CustomerDto, Customer>, ICu
     /// <returns></returns>
     [HttpGet(Name = "GetCustomers")]
     [HttpHead]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllAsync([FromQuery] CustomerResourceParameters parameters)
     {
         var result = await customerRepository.GetAllAsync(parameters);

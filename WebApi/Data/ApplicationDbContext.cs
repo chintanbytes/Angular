@@ -30,12 +30,6 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // Disable lazy loading
-        //optionsBuilder.UseLazyLoadingProxies(false);
-
-        // Enable eager loading for all navigation properties
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
-
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -50,23 +44,19 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("BIGINT")
                 .UseIdentityColumn();
 
-            // entity.HasOne(c => c.ApplicationUser)
-            //    .WithOne()
-            //    .HasForeignKey<Customer>(c => c.ApplicationUser);
+            entity.HasOne(c => c.ApplicationUser)
+            .WithOne(u => u.Customer)
+            .HasForeignKey<Customer>(c => c.ApplicationUserId);
 
-            // entity.HasOne(c => c.Address)
-            //     .WithOne()
-            //     .HasForeignKey<Customer>(c => c.Address);
+            entity.HasOne(c => c.Address)
+            .WithOne(a => a.Customer)
+            .HasForeignKey<Customer>(c => c.AddressId);
 
-            // entity.HasOne(c => c.PhoneNumber)
-            //    .WithOne()
-            //    .HasForeignKey<Customer>(c => c.PhoneNumber);
+            entity.HasOne(c => c.PhoneNumber)
+            .WithOne(a => a.Customer)
+            .HasForeignKey<Customer>(c => c.PhoneNumberId);
 
-            // entity.HasMany(c => c.Orders)
-            //   .WithOne(o => o.Customer)
-            //   .HasForeignKey(o => o.Customer);
         });
-
 
         modelBuilder.Entity<Employee>(entity =>
         {
@@ -75,25 +65,18 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("BIGINT")
                 .UseIdentityColumn();
 
-            // entity.HasOne(e => e.ApplicationUser)
-            //      .WithOne()
-            //      .HasForeignKey<Employee>(e => e.ApplicationUser);
+            entity.HasOne(e => e.ApplicationUser)
+            .WithOne(u => u.Employee)
+            .HasForeignKey<Employee>(e => e.ApplicationUserId);
 
-            // entity.HasOne(c => c.Address)
-            //     .WithOne()
-            //     .HasForeignKey<Employee>(c => c.Address);
+            entity.HasOne(e => e.Address)
+            .WithOne(a => a.Employee)
+            .HasForeignKey<Employee>(e => e.AddressId);
 
-            // entity.HasOne(c => c.PhoneNumber)
-            //     .WithOne()
-            //     .HasForeignKey<Employee>(c => c.PhoneNumber);
+            entity.HasOne(e => e.PhoneNumber)
+            .WithOne(a => a.Employee)
+            .HasForeignKey<Employee>(e => e.PhoneNumberId);
 
-            // entity.HasMany(c => c.Orders)
-            //   .WithOne(o => o.Employee)
-            //   .HasForeignKey(o => o.Employee);
-
-            // entity.HasOne(d => d.ReportsTo)
-            //     .WithMany(p => p.InverseReportsToNavigation)
-            //     .HasForeignKey(d => d.ReportsTo);
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -103,23 +86,18 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("BIGINT")
                 .UseIdentityColumn();
 
-            // entity.HasOne(c => c.ShippingAddress)
-            //     .WithOne()
-            //     .HasForeignKey<Order>(o => o.ShippingAddress);
+            entity.HasOne(o => o.Customer)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(o => o.CustomerId);
 
-            // entity.HasOne(d => d.Customer)
-            //     .WithMany(p => p.Orders)
-            //     .HasForeignKey(d => d.Customer);
+            entity.HasOne(o => o.Employee)
+            .WithMany(e => e.Orders)
+            .HasForeignKey(o => o.EmployeeId);
 
-            // entity.HasOne(d => d.Employee)
-            //     .WithMany(p => p.Orders)
-            //     .HasForeignKey(d => d.Employee);
-
-            // entity.HasMany(o => o.OrderDetails)
-            //     .WithOne(od => od.Order)
-            //     .HasForeignKey(od => od.Order);
+            entity.HasOne(o => o.ShippingAddress)
+            .WithOne(a => a.Order)
+            .HasForeignKey<Order>(o => o.ShippingAddressId);
         });
-
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
@@ -128,13 +106,6 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("BIGINT")
                 .UseIdentityColumn();
 
-            // entity.HasOne(od => od.Product)
-            //    .WithMany(p => p.OrderDetails)
-            //    .HasForeignKey(od => od.Product);
-
-            // entity.HasOne(od => od.Order)
-            //     .WithMany(o => o.OrderDetails)
-            //     .HasForeignKey(od => od.Order);
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -144,7 +115,6 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("BIGINT")
                 .UseIdentityColumn();
         });
-
 
         modelBuilder.Entity<Address>(entity =>
         {

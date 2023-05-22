@@ -54,32 +54,9 @@ public class UsersController : ControllerBase
 
     }
 
-    //Create register end point
-    [HttpPost]
-    [Route("register")]
-    public async Task<IResult> RegisterAsync([FromBody] UserDto userData)
-    {
-        if (userData.Password != userData.ConfirmPassword)
-        {
-            return Results.BadRequest();
-        }
-
-        ApplicationUser user = new() { UserName = userData.Username };
-
-        var createResult = await userManager.CreateAsync(user, userData.Password);
-
-        if (!createResult.Succeeded)
-        {
-            return Results.BadRequest();
-        }
-
-        await signInManager.SignInAsync(user, true);
-
-        return Results.Ok();
-    }
-
     //Get current user
     [HttpGet]
+    [Authorize]
     public Dictionary<string, string> GetUser()
     {
         return User.Claims.ToDictionary(c => c.Type, c => c.Value);

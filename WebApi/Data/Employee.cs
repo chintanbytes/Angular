@@ -2,6 +2,14 @@
 
 public partial class Employee : BaseEntity
 {
+    public string ApplicationUserId { get; set; }
+
+    public long AddressId { get; set; }
+
+    public long PhoneNumberId { get; set; }
+
+    public long? ReportsTo { get; set; }
+
     public DateTime? HireDate { get; set; }
 
     public byte[]? Photo { get; set; }
@@ -14,7 +22,7 @@ public partial class Employee : BaseEntity
 
     public virtual ApplicationUser ApplicationUser { get; set; }
 
-    public virtual Employee? ReportsTo { get; set; }
+    public virtual Employee? ReportsToNavigation { get; set; }
 
     public virtual ICollection<Employee> InverseReportsToNavigation { get; set; } = new List<Employee>();
 

@@ -1,11 +1,17 @@
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MyShop.WebApi.Data;
 public class BaseEntity : IEquatable<BaseEntity>
 {
     public long Id { get; set; }
     public DateTime CreatedAt { get; set; }
-    public ApplicationUser CreatedBy { get; set; }
+    public string? CreatedById { get; set; }
+    [NotMapped]
+    public ApplicationUser? CreatedBy { get; set; }
     public DateTime? ModifiedAt { get; set; }
+    public string? ModifiedById { get; set; }
+    [NotMapped]
     public ApplicationUser ModifiedBy { get; set; }
 
     public override bool Equals(object obj)
